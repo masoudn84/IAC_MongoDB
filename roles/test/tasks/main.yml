@@ -1,0 +1,6 @@
+  ---
+  - name: Create a DOS-style text file from a template
+    template:
+      src: /root/sd
+      dest: /share/windows/config.ini
+      newline_sequence: '\r\n'

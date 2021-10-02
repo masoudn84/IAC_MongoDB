@@ -1,0 +1,18 @@
+---
+- hosts: test
+  gather_facts: true
+  tasks:
+      - name: change python to python3
+        shell: >
+          ln -sf /usr/bin/python3 /usr/bin/python
+      - name: create in
+        mongodb_user:
+          database: admin
+          name: mongo-admin1
+          password: 12345
+          state: present
+          roles:
+            - db: admin
+              role: root
+      
+

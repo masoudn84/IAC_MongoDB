@@ -1,0 +1,68 @@
+---
+
+
+- name: copy rpm
+  copy:
+    src: mongodb
+    dest: /root/
+
+- name:  mongodb install package
+  yum:
+    name: /root/mongodb/{{item}}
+    state: present
+  loop:
+    - mongodb-cli-1.0.0.x86_64.rpm
+    - mongodb-org-shell-4.2.9-1.el7.x86_64.rpm
+    - mongodb-org-tools-4.2.9-1.el7.x86_64.rpm
+    - mongodb-org-mongos-4.2.9-1.el7.x86_64.rpm
+    - mongodb-org-server-4.2.9-1.el7.x86_64.rpm
+    - mongodb-org-4.2.9-1.el7.x86_64.rpm
+- name: create ssl
+  shell: >
+    openssl rand -base64 756 > mongo-keyfile
+  when: ansible_ssh_host  == "192.168.75.37" 
+  tags: osss
+- name: create ssl dir
+  file:
+    path: /opt/mongo
+    state: directory
+  tags: i
+###create ssh-keygen && ssh-copy-id
+# - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa) 
+#   community.crypto.openssh_keypair:
+#     path: /root/.ssh/id_ssh_rsa
+# - name: copy register
+#   shell: >
+#     echo "{{ssl}}" > /opt/mongo/mongo-key.txt
+#   delegate_to: '192.168.106.92'
+#   tags: osssl
+# - name: copy ssl
+#   synchronize:
+#     src: /root/mongo-keyfile
+#     dest: /opt/mongo
+#     mode: pull
+#   delegate_to: "192.168.106.92"
+#   tags: i
+
+
+- name: Fetch the file from the master to ansible
+  run_once: yes
+  fetch: 
+    src: /root/mongo-keyfile 
+    dest: temp/mongo-keyfile
+    flat: yes
+  #when: ansible_ssh_host == '192.168.106.92'
+  when: ansible_host == '192.168.75.37' 
+  tags: osss
+
+- name: Copy the file from the ansible to nodes
+  copy: src=temp/mongo-keyfile dest=/opt/mongo/
+  #when: "{{ ansible_hostname != 'rabbit' }}"
+  tags: osss
+- name: change mode
+  file:
+    path: /opt/mongo/mongo-keyfile
+    owner: mongod
+    group: mongod
+    mode: '400'
+  tags: osss

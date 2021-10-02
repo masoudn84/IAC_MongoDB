@@ -1,0 +1,28 @@
+---
+- name: use python3
+  file:
+    src: /usr/bin/python3 
+    dest: /usr/bin/python
+    state: link
+- name: create in
+  no_log: true
+  mongodb_user:
+    database: admin
+    name: mongo-admin
+    password: '{{password}}'
+    state: present
+    roles:
+    - db: admin
+      role: root
+  when: ansible_host == "192.168.75.37"
+- name: change python to python2
+  file:
+    src: /usr/bin/python2 
+    dest: /usr/bin/python
+    state: link   
+  
+# - name: Initiate the Config Replica Set
+#   shell: >
+#     mongo --host {{inventory_hostname}} --port 27019 -u mongo-admin --authenticationDatabase admin
+#   tags: db
+

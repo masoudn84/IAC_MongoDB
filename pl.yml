@@ -1,0 +1,24 @@
+---
+- hosts: mongo
+  #gather_facts: false  
+
+  vars:
+    bindIp: "{{inventory_hostname}}"
+    repl_master: "192.168.75.37"
+    password: "12345"
+    replSetName: rs0
+  roles:
+    - dependency
+    - install
+    - firewall
+    - config
+    - service
+    - mongo-user
+
+  #   - service
+  # tasks:
+  #   - name: start config servers
+  #     shell: mongod --config /etc/mongod.conf 
+    # - name: start replcation 
+      
+

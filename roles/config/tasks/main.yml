@@ -1,0 +1,16 @@
+---
+# - name: copy ConfSrv config file
+#   template:
+#     src: mongod-configsrv.conf.j2
+#     dest: /etc/mongoddd.conf
+#   when: inventory_hostname in groups['ConfSrv']
+#   tags: when
+# - name: copy  ShardSrv config file
+#   template:
+#     src: mongod-shardSrv.conf.j2
+#     dest: /etc/mongoddd.conf
+#   when: inventory_hostname in groups['ShardSrv']
+- name: copy config file
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf

@@ -1,0 +1,15 @@
+---
+- name: open port 27017
+  firewalld:
+    port: "{{item}}"
+    permanent: true
+    state: enabled
+  loop: 
+      - 27017/tcp
+      
+  
+- name: restart firewall
+  systemd:
+    name: firewalld
+    state: restarted
+    

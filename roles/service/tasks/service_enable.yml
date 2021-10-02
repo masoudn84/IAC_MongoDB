@@ -1,0 +1,25 @@
+---
+- name: daemon reload
+  systemd:
+    daemon_reload: yes
+  tags: service
+- name: Enable service httpd and ensure it is not masked
+  systemd:
+    name: mongod
+    enabled: yes
+    masked: no
+
+- name: start and enabled mongod service
+  systemd:
+      name: mongod
+      daemon_reload: yes
+      state: started
+      enabled: yes
+  tags: service
+# - name: restart  mongo service
+#   systemd:
+#       name: elasticsearch
+#       daemon_reload: yes
+#       state: restarted
+      
+#   tags: service
